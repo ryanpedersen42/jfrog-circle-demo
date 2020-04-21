@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
     node: circleci/node@1.1.6
+    artifactory-orb: jfrog/artifactory-orb@1.0.1
 
 jobs:
   build_and_test:
@@ -13,19 +14,18 @@ jobs:
           steps:
             - run: npm install
             - run: npm test
-  deploy: 
-    executor: 
-        name: node/default
-    steps:
-      - checkout
 
 workflows:
   build_test_deploy:
     jobs:
       - build_and_test
-      - deploy:
-          requires:
-            - build_and_test
-          filters:
-            branches:
-              only: master
+      - artifactory/docker-publish:
+            docker-registry: yokota-circle-artifactory.jfrog.io
+            docker-tag: 'yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}'
+            name: Docker Publish 
+            repository: docker-local
+            requires:
+                - build_and_test
+            filters:
+                branches:
+                    only: master

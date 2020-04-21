@@ -1,0 +1,71 @@
+version: 2.1
+
+commands:
+  install_npm:
+    steps:
+      - checkout 
+      - run:
+        name: update npm
+        command: 'sudo npm install -g npm@latest'
+      - restore_cache:
+          keys:
+              # when lock file changes, use increasingly general patterns to restore cache
+              - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+              - node-v1-{{ .Branch }}-
+              - node-v1-
+      - run:
+          name: Fetch dependencies
+          command: npm install
+      - save_cache:
+          paths:
+              - node_modules  
+          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+
+executors:
+  node_executor:
+    docker:
+      - image: circleci/node:13.10.1
+    working_directory: ~/react-app
+
+jobs:
+  build:
+    executor: node_executor
+    steps:
+      - checkout
+  unit_tests:
+    executor: node_executor
+    steps:
+      - install_npm 
+      - run:
+          name: Test application 
+          command: npm test
+  deploy: 
+    executor: node_executor
+    steps:
+      - checkout
+
+
+workflows:
+  build_test_deploy:
+    jobs:
+      - build 
+      - unit_tests:
+          requires:
+            - build 
+      - snapshot_tests: 
+          requires:
+            - build    
+      - hold:
+          type: approval
+          requires:
+            - unit_tests
+            - snapshot_tests
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - hold 
+          filters:
+            branches:
+              only: master

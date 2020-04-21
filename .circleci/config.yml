@@ -5,8 +5,8 @@ commands:
     steps:
       - checkout 
       - run:
-        name: update npm
-        command: 'sudo npm install -g npm@latest'
+            name: update npm
+            command: 'sudo npm install -g npm@latest'
       - restore_cache:
           keys:
               # when lock file changes, use increasingly general patterns to restore cache
@@ -44,28 +44,14 @@ jobs:
     steps:
       - checkout
 
-
 workflows:
   build_test_deploy:
     jobs:
       - build 
       - unit_tests:
           requires:
-            - build 
-      - snapshot_tests: 
-          requires:
-            - build    
-      - hold:
-          type: approval
-          requires:
-            - unit_tests
-            - snapshot_tests
-          filters:
-            branches:
-              only: master
+            - build   
       - deploy:
-          requires:
-            - hold 
           filters:
             branches:
               only: master

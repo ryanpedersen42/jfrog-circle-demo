@@ -14,7 +14,8 @@ jobs:
             - run: npm install
             - run: npm test
   deploy: 
-    executor: node_executor
+    executor: 
+        name: node/default
     steps:
       - checkout
 

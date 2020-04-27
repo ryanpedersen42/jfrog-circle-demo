@@ -10,11 +10,12 @@ jobs:
       - image: circleci/node:13.10.1
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Install jFrog CLI
           command: curl -fL https://getcli.jfrog.io | sh
       - run: ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_API_KEY --interactive=false
-      - run: curl -X POST docker://yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}
+      - run: echo "curl command will go here"
         
 workflows:
   build_test_deploy:

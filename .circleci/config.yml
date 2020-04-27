@@ -31,6 +31,5 @@ workflows:
                 branches:
                     only: master
       - get_xray:
-          filters:
-            requires:
-              artifactory/docker-publish
+          requires:
+            - artifactory/docker-publish

@@ -15,21 +15,18 @@ jobs:
           command: curl -fL https://getcli.jfrog.io | sh
       - run: ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_API_KEY --interactive=false
       - run: curl -X POST docker://yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}
-
-
-
         
 workflows:
   build_test_deploy:
     jobs:
       - artifactory/docker-publish:
-            docker-registry: yokota-circle-artifactory.jfrog.io
-            docker-tag: 'yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}'
-            name: Docker Publish 
-            repository: circle-artifactory
-            filters:
-                branches:
-                    only: master
+          docker-registry: yokota-circle-artifactory.jfrog.io
+          docker-tag: 'yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}'
+          name: Docker Publish 
+          repository: circle-artifactory
+          filters:
+              branches:
+                  only: master
       - get_xray:
           requires:
             - artifactory/docker-publish

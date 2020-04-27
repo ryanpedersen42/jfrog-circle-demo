@@ -5,7 +5,7 @@ orbs:
     artifactory: circleci/artifactory@1.0.0
 
 jobs:
-  get_xray:
+  xray_cli:
     docker:
       - image: circleci/node:13.10.1
     steps:
@@ -27,6 +27,6 @@ workflows:
           filters:
               branches:
                   only: master
-      - get_xray:
+      - xray_cli:
           requires:
             - artifactory/docker-publish

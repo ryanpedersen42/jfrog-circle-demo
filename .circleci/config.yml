@@ -18,14 +18,11 @@ jobs:
 workflows:
   build_test_deploy:
     jobs:
-      - build_and_test
       - artifactory/docker-publish:
             docker-registry: yokota-circle-artifactory.jfrog.io
             docker-tag: 'yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}'
             name: Docker Publish 
             repository: circle-artifactory
-            requires:
-                - build_and_test
             filters:
                 branches:
                     only: master

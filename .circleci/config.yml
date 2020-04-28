@@ -10,24 +10,26 @@ jobs:
       - image: circleci/node:13.10.1
     steps:
       - checkout
-      - setup_remote_docker
+      #this can be automated with this orb i believe: https://circleci.com/orbs/registry/orb/circleci/artifactory
       - run:
           name: Install jFrog CLI
-          command: curl -fL https://getcli.jfrog.io | sh
-      - run: ./jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_API_KEY --interactive=false
+          command: npm install -g jfrog-cli-go
+      - run: jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_API_KEY --interactive=false
       - run: echo "curl command will go here"
         
 workflows:
   build_test_deploy:
     jobs:
+      #this job gets my Dockerfile to JFrog
       - artifactory/docker-publish:
           docker-registry: yokota-circle-artifactory.jfrog.io
           docker-tag: 'yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}'
-          name: Docker Publish 
+          name: jfrog_docker_publish 
           repository: circle-artifactory
           filters:
               branches:
                   only: master
+      #this job invokes the job above. want to know best way to use the API.
       - xray_cli:
           requires:
-            - Docker Publish
+            - jfrog_docker_publish

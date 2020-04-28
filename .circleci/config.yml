@@ -11,15 +11,17 @@ jobs:
     steps:
       - checkout
       #this can be automated with this orb i believe: https://circleci.com/orbs/registry/orb/circleci/artifactory
-      - run:
-          name: Install jFrog CLI
-          command: 
-            sudo npm i -g npm jfrog-cli-go
-      - run: jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_API_KEY --interactive=false
-      - run: |
-          jfrog rt bs jfrog-circle-demo 1.0-${CIRCLE_BUILD_NUM}
-          echo "curl command will go here"
-        
+      - artifactory/install
+      - artifactory/configure:
+          artifactory-key: ARTIFACTORY_API_KEY
+          artifactory-url: ARTIFACTORY_URL
+          artifactory-user: ARTIFACTORY_USER
+      - run: 
+          command: |
+            jfrog rt bs jfrog-circle-demo 1.0-${CIRCLE_BUILD_NUM}
+            echo "curl command will go here"
+            
+        # - run: jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_API_KEY --interactive=false
 workflows:
   build_test_deploy:
     jobs:

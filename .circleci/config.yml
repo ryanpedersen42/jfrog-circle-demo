@@ -16,7 +16,7 @@ jobs:
           command: sudo npm install -g jfrog-cli-go
       - run: jfrog rt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_API_KEY --interactive=false
       - run: |
-          jfrog rt bs jfrog_docker_publish 1.0-${CIRCLE_BUILD_NUM}
+          jfrog rt bs jfrog-circle-demo 1.0-${CIRCLE_BUILD_NUM}
           echo "curl command will go here"
         
 workflows:

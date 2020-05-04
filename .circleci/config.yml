@@ -19,6 +19,7 @@ jobs:
           artifactory-user: ARTIFACTORY_USER
       - run: 
           command: |
+            docker login --username=$ARTIFACTORY_USER --password=$ARTIFACTORY_API_KEY yokota-circle-artifactory.jfrog.io
             docker pull hello-world
             docker tag hello-world:latest yokota-circle-artifactory.jfrog.io/hello-world:latest
             docker push yokota-circle-artifactory.jfrog.io/hello-world:latest
@@ -30,13 +31,13 @@ workflows:
   build_test_deploy:
     jobs:
       #this job gets my Dockerfile to JFrog
-      # - artifactory/docker-publish:
-      #     docker-registry: yokota-circle-artifactory.jfrog.io
-      #     docker-tag: 'yokota-circle-artifactory.jfrog.io/jfrog-circle-demo:1.0-${CIRCLE_BUILD_NUM}'
-      #     name: jfrog_docker_publish 
-      #     repository: circle-artifactory
-      #     filters:
-      #         branches:
-      #             only: master
+      - artifactory/docker-publish:
+          docker-registry: yokota-circle-artifactory.jfrog.io
+          docker-tag: 'yokota-circle-artifactory.jfrog.io/circle-artifactory:${CIRCLE_BUILD_NUM}'
+          name: jfrog_docker_publish 
+          repository: circle-artifactory
+          filters:
+              branches:
+                  only: master
       #this job invokes the job above. want to know best way to use the API.
       - xray_cli

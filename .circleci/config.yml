@@ -18,8 +18,7 @@ jobs:
           artifactory-user: ARTIFACTORY_USER
       - run: 
           command: |
-            jfrog rt bs jfrog-circle-demo 1.0-${CIRCLE_BUILD_NUM}
-            echo "curl command will go here"
+            jfrog rt bs jfrog-circle-demo ${CIRCLE_BUILD_NUM}
             
 workflows:
   build_test_deploy:

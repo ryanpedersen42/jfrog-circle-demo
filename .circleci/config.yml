@@ -27,8 +27,9 @@ jobs:
             docker login --username=$ARTIFACTORY_USER --password=$ARTIFACTORY_API_KEY $ARTIFACTORY_DOCKER_REGISTRY
       - run:
           name: Docker build and push (and other commands)
-          command: |
-            docker push yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM
+          command: echo "skipping"
+          # command: |
+          #   # docker push yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM
       - run: 
           name: Split up JFrog CLI 
           command: |

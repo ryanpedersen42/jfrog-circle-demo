@@ -26,7 +26,7 @@ jobs:
             docker login --username=$ARTIFACTORY_USER --password-stdin=$ARTIFACTORY_API_KEY $ARTIFACTORY_DOCKER_REGISTRY
       - run:
           name: Docker build and push (and other commands)
-          command: 
+          command: |
             docker push yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM

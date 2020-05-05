@@ -45,6 +45,7 @@ jobs:
       - run: 
           name: X-ray commands
           command: |
+            jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
             
 workflows:

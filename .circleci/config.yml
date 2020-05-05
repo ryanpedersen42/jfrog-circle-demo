@@ -18,12 +18,17 @@ jobs:
           artifactory-url: ARTIFACTORY_URL
           artifactory-user: ARTIFACTORY_USER
       - run: 
+          name: Build Docker image
           command: |
-            docker login --username=$ARTIFACTORY_USER --password=$ARTIFACTORY_API_KEY yokota-circle-artifactory.jfrog.io
-            docker pull hello-world
-            docker tag hello-world:latest yokota-circle-artifactory.jfrog.io/hello-world:latest
-            docker push yokota-circle-artifactory.jfrog.io/hello-world:latest
-            jfrog rt dp yokota-circle-artifactory.jfrog.io/hello-world:latest circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
+            docker build -t $ARTIFACTORY_DOCKER_REGISTRY/circle-artifactory:$CIRCLE_BUILD_NUM .
+      - run:
+          name: Log in to Docker
+            docker login --username=$ARTIFACTORY_USER --password-stdin=$ARTIFACTORY_API_KEY $ARTIFACTORY_DOCKER_REGISTRY
+      - run:
+          name: Docker build and push (and other commands)
+          command: 
+            docker push yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM
+            jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
             
@@ -32,9 +37,9 @@ workflows:
     jobs:
       #this job gets my Dockerfile to JFrog
       # - artifactory/docker-publish:
-      #     docker-registry: yokota-circle-artifactory.jfrog.io
-      #     docker-tag: 'yokota-circle-artifactory.jfrog.io/circle-artifactory:${CIRCLE_BUILD_NUM}'
-      #     name: jfrog_docker_publish 
+      #     docker-registry: $ARTIFACTORY_DOCKER_REGISTRY
+      #     docker-tag: '$ARTIFACTORY_DOCKER_REGISTRY/circle-artifactory:${CIRCLE_BUILD_NUM}'
+      #     name: Build and tag Docker image & push to JFrog Docker Registry 
       #     repository: circle-artifactory
       #     filters:
       #         branches:

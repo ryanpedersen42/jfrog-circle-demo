@@ -9,9 +9,6 @@ jobs:
     docker:
       - image: circleci/node:13.10.1
     steps:
-      - checkout
-      - setup_remote_docker
-      #this can be automated with this orb i believe: https://circleci.com/orbs/registry/orb/circleci/artifactory
       - artifactory/install
       - artifactory/configure:
           artifactory-key: ARTIFACTORY_API_KEY
@@ -26,7 +23,7 @@ jobs:
           command: |
             docker login --username=$ARTIFACTORY_USER --password=$ARTIFACTORY_API_KEY $ARTIFACTORY_DOCKER_REGISTRY
       - run:
-          name: Docker push 
+          name: Docker build and push (and other commands)
           command: |
             docker push yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM

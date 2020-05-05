@@ -29,6 +29,9 @@ jobs:
           name: Docker build and push (and other commands)
           command: |
             docker push yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM
+      - run: 
+          name: Split up JFrog CLI 
+          command: |
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM

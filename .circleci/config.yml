@@ -23,6 +23,7 @@ jobs:
             docker build -t $ARTIFACTORY_DOCKER_REGISTRY/circle-artifactory:$CIRCLE_BUILD_NUM .
       - run:
           name: Log in to Docker
+          command: |
             docker login --username=$ARTIFACTORY_USER --password-stdin=$ARTIFACTORY_API_KEY $ARTIFACTORY_DOCKER_REGISTRY
       - run:
           name: Docker build and push (and other commands)

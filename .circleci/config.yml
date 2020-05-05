@@ -5,7 +5,7 @@ orbs:
   artifactory: circleci/artifactory@1.0.0
 
 jobs:
-  deploy-scan:
+  build:
     docker:
       - image: circleci/node:13.10.1
     steps:
@@ -28,6 +28,20 @@ jobs:
           name: Split up JFrog CLI 
           command: |
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
+
+  scan-&-promote:
+    docker:
+      - image: circleci/node:13.10.1
+    steps:
+      - checkout
+      - artifactory/install
+      - artifactory/configure:
+          artifactory-key: ARTIFACTORY_API_KEY
+          artifactory-url: ARTIFACTORY_URL
+          artifactory-user: ARTIFACTORY_USER
+      - run:
+          name: Scan and Promote
+          command: |
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
             
@@ -35,7 +49,10 @@ workflows:
   build_test_deploy:
     jobs:
       - node/test:
-          name: node_tests
-      - deploy-scan:
+          name: node-tests
+      - build:
           requires:
-            - node_tests
+            - node-tests
+      - scan-&-promote:
+          requires:
+            - build

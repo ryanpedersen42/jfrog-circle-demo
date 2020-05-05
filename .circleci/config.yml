@@ -55,7 +55,7 @@ workflows:
           docker-registry: $ARTIFACTORY_DOCKER_REGISTRY
           docker-tag: '$ARTIFACTORY_DOCKER_REGISTRY/circle-artifactory:${CIRCLE_BUILD_NUM}'
           name: Build-Docker-Artifactory
-          repository: circle-artifactory
+          build-name: circle-artifactory
           filters:
               branches:
                   only: master

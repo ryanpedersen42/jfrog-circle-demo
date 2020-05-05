@@ -5,13 +5,12 @@ orbs:
     artifactory: circleci/artifactory@1.0.0
 
 jobs:
-  xray_cli:
+  artifactory:
     docker:
       - image: circleci/node:13.10.1
     steps:
       - checkout
-      # - setup_remote_docker
-      #this can be automated with this orb i believe: https://circleci.com/orbs/registry/orb/circleci/artifactory
+      - setup_remote_docker
       - artifactory/install
       - artifactory/configure:
           artifactory-key: ARTIFACTORY_API_KEY
@@ -35,4 +34,8 @@ jobs:
 workflows:
   build_test_deploy:
     jobs:
-      - xray_cli
+      - node/test:
+          name: node_tests
+      - xray_cli:
+          requires:
+            - node_tests

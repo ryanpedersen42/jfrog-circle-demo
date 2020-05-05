@@ -29,7 +29,7 @@ jobs:
           command: |
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
 
-  scan-&-promote:
+  scan-and-promote:
     docker:
       - image: circleci/node:13.10.1
     steps:
@@ -53,6 +53,6 @@ workflows:
       - build:
           requires:
             - node-tests
-      - scan-&-promote:
+      - scan-and-promote:
           requires:
             - build

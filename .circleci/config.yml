@@ -54,14 +54,14 @@ workflows:
       - artifactory/docker-publish:
           docker-registry: $ARTIFACTORY_DOCKER_REGISTRY
           docker-tag: '$ARTIFACTORY_DOCKER_REGISTRY/circle-artifactory:${CIRCLE_BUILD_NUM}'
-          name: Build and tag Docker image & push to JFrog Docker Registry 
+          name: Build-Docker-Artifactory
           repository: circle-artifactory
           filters:
               branches:
                   only: master
       - xray_commands:
           requires:
-            - artifactory/docker-publish
+            - Build-Docker-Artifactory
 
       # this job invokes the job above. want to know best way to use the API.
       # - xray_cli

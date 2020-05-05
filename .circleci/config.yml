@@ -1,8 +1,8 @@
 version: 2.1
 
 orbs:
-    node: circleci/node@1.1.6
-    artifactory: circleci/artifactory@1.0.0
+  node: circleci/node@2.0.3
+  artifactory: circleci/artifactory@1.0.0
 
 jobs:
   artifactory:

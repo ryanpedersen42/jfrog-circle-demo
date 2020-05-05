@@ -9,6 +9,9 @@ jobs:
     docker:
       - image: circleci/node:13.10.1
     steps:
+      - checkout
+      - setup_remote_docker
+      #this can be automated with this orb i believe: https://circleci.com/orbs/registry/orb/circleci/artifactory
       - artifactory/install
       - artifactory/configure:
           artifactory-key: ARTIFACTORY_API_KEY
@@ -29,35 +32,18 @@ jobs:
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
-  xray_commands:
-    docker:
-      - image: circleci/node:13.10.1
-    steps:
-      - checkout
-      - artifactory/install
-      - artifactory/configure:
-          artifactory-key: ARTIFACTORY_API_KEY
-          artifactory-url: ARTIFACTORY_URL
-          artifactory-user: ARTIFACTORY_USER
-      - run: 
-          name: X-ray commands
-          command: |
-            jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
             
 workflows:
   build_test_deploy:
     jobs:
-      # this job gets my Dockerfile to JFrog
+      #this job gets my Dockerfile to JFrog
       # - artifactory/docker-publish:
       #     docker-registry: $ARTIFACTORY_DOCKER_REGISTRY
       #     docker-tag: '$ARTIFACTORY_DOCKER_REGISTRY/circle-artifactory:${CIRCLE_BUILD_NUM}'
-      #     name: Build-Docker-Artifactory
-      #     build-name: circlec-artifactory
+      #     name: Build and tag Docker image & push to JFrog Docker Registry 
       #     repository: circle-artifactory
       #     filters:
       #         branches:
       #             only: master
-      - xray_commands
-
-      # this job invokes the job above. want to know best way to use the API.
-      # - xray_cli
+      #this job invokes the job above. want to know best way to use the API.
+      - xray_cli

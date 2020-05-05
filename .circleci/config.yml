@@ -28,6 +28,7 @@ jobs:
       - run:
           name: Docker push 
           command: |
+            docker push yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
@@ -44,7 +45,6 @@ jobs:
       - run: 
           name: X-ray commands
           command: |
-            jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
             
 workflows:
@@ -55,7 +55,7 @@ workflows:
       #     docker-registry: $ARTIFACTORY_DOCKER_REGISTRY
       #     docker-tag: '$ARTIFACTORY_DOCKER_REGISTRY/circle-artifactory:${CIRCLE_BUILD_NUM}'
       #     name: Build-Docker-Artifactory
-      #     build-name: circle-artifactory
+      #     build-name: circlec-artifactory
       #     repository: circle-artifactory
       #     filters:
       #         branches:

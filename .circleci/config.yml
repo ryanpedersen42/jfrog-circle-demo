@@ -30,13 +30,35 @@ jobs:
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
-            jfrog rt bpr circle-artifactory $CIRCLE_BUILD_NUM docker-local
+  promote:
+    docker:
+      - image: circleci/node:13.10.1
+    steps:
+      - checkout
+      - artifactory/install
+      - artifactory/configure:
+          artifactory-key: ARTIFACTORY_API_KEY
+          artifactory-url: ARTIFACTORY_URL
+          artifactory-user: ARTIFACTORY_USER
+      - run:
+          name: Promote
+          command: jfrog rt bpr circle-artifactory $CIRCLE_BUILD_NUM docker-local
             
 workflows:
   build_test_deploy:
     jobs:
       - node/test:
           name: node-tests
-      - build-scan-promote:
+      - build-scan:
           requires:
             - node-tests
+      - hold:
+          type: approval
+          requires:
+            - build-scan
+          filters:
+            branches:
+              only: master
+      - promote:
+          requires:
+            - hold

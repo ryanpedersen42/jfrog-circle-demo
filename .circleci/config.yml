@@ -62,3 +62,6 @@ workflows:
       - promote:
           requires:
             - hold
+          filters:
+            branches:
+              only: master

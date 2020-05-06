@@ -25,11 +25,12 @@ jobs:
           command: |
             docker login --username=$ARTIFACTORY_USER --password=$ARTIFACTORY_API_KEY $ARTIFACTORY_DOCKER_REGISTRY
       - run: 
-          name: Split up JFrog CLI 
+          name: JFrog Commands 
           command: |
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_BUILD_NUM circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_BUILD_NUM
             jfrog rt bp circle-artifactory $CIRCLE_BUILD_NUM
             jfrog rt bs circle-artifactory $CIRCLE_BUILD_NUM
+            jfrog rt bpr circle-artifactory $CIRCLE_BUILD_NUM docker-local
             
 workflows:
   build_test_deploy:

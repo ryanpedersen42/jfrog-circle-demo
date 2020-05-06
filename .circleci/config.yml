@@ -5,7 +5,7 @@ orbs:
   artifactory: circleci/artifactory@1.0.0
 
 jobs:
-  build-scan-promote:
+  build-scan:
     docker:
       - image: circleci/node:13.10.1
     steps:

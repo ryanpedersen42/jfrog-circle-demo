@@ -28,6 +28,7 @@ jobs:
           name: JFrog Commands 
           command: |
             jfrog rt dp yokota-circle-artifactory.jfrog.io/circle-artifactory:$CIRCLE_SHA1 circle-artifactory --build-name=circle-artifactory --build-number=$CIRCLE_SHA1
+            jfrog rt bce circle-artifactory $CIRCLE_SHA1
             jfrog rt bp circle-artifactory $CIRCLE_SHA1
             jfrog rt bs circle-artifactory $CIRCLE_SHA1
   promote:
@@ -65,3 +66,4 @@ workflows:
           filters:
             branches:
               only: master
+

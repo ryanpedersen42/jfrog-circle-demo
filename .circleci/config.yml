@@ -27,7 +27,7 @@ jobs:
       - run: 
           name: JFrog Commands 
           command: |
-            jfrog rt dp $ARTIFACTORY_DOCKER_REGISTRY/demo-build:$CIRCLE_SHA1 docker-dev-local --build-name=demo-build --build-number=$CIRCLE_SHA1
+            jfrog rt dp yokota-docker-dev-local.io/demo-build:$CIRCLE_SHA1 docker-dev-local --build-name=demo-build --build-number=$CIRCLE_SHA1
             jfrog rt bce demo-build $CIRCLE_SHA1
             jfrog rt bp demo-build $CIRCLE_SHA1
             jfrog rt bs demo-build $CIRCLE_SHA1

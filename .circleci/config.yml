@@ -19,7 +19,7 @@ jobs:
       - run: 
           name: Build Docker image
           command: |
-            docker build -t $ARTIFACTORY_DOCKER_REGISTRY/demo-build:$CIRCLE_SHA1 .
+            docker build -t $ARTIFACTORY_DOCKER_REGISTRY/demo-build:$CIRCLE_BUILD_NUM .
       - run:
           name: Log in to Docker
           command: |
@@ -27,10 +27,10 @@ jobs:
       - run: 
           name: JFrog Commands 
           command: |
-            jfrog rt dp yokota-circle-artifactory.jfrog.io/demo-build:$CIRCLE_SHA1 circle-artifactory --build-name=demo-build --build-number=$CIRCLE_SHA1
-            jfrog rt bce demo-build $CIRCLE_SHA1
-            jfrog rt bp demo-build $CIRCLE_SHA1
-            jfrog rt bs demo-build $CIRCLE_SHA1
+            jfrog rt dp yokota-circle-artifactory.jfrog.io/demo-build:$CIRCLE_BUILD_NUM circle-artifactory --build-name=demo-build --build-number=$CIRCLE_BUILD_NUM
+            jfrog rt bce demo-build $CIRCLE_BUILD_NUM
+            jfrog rt bp demo-build $CIRCLE_BUILD_NUM
+            jfrog rt bs demo-build $CIRCLE_BUILD_NUM
   promote:
     docker:
       - image: circleci/node:13.10.1
@@ -43,7 +43,7 @@ jobs:
           artifactory-user: ARTIFACTORY_USER
       - run:
           name: Promote
-          command: jfrog rt bpr demo-build $CIRCLE_SHA1 docker-stg-local
+          command: jfrog rt bpr demo-build $CIRCLE_BUILD_NUM docker-stg-local
             
 workflows:
   build_test_deploy:
